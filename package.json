@@ -1,12 +1,17 @@
 {
   "name": "@hiogawa/jscodeshift-isort",
-  "version": "1.0.0-pre.0",
+  "version": "1.0.0-pre.1",
   "type": "commonjs",
   "main": "./dist/index.js",
   "bin": "./bin/cli.js",
   "files": [
     "dist"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hi-ogawa/jscodeshift-isort"
+  },
   "scripts": {
     "dev": "run-p dev:*",
     "dev:tsup": "tsup --watch",
