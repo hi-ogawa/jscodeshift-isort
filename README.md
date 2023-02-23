@@ -1,7 +1,8 @@
-# jscodeshift-isort (wip)
+# jscodeshift-isort
 
 sorting `ImportDeclaration` and `ImportSpecifier` using a simple transform implemented on [`jscodeshift`](https://github.com/facebook/jscodeshift).
 
-## references
-
-- https://github.com/hi-ogawa/web-ext-tab-manager/pull/14
+```sh
+pnpm i
+./bin/cli.js $(git grep -l . '*.ts') --fix
+```
