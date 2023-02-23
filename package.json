@@ -20,7 +20,8 @@
     "lint:isort": "pnpm lint-check:isort --fix",
     "lint-check:isort": "./bin/cli.js $(git grep -l . '*.ts')",
     "lint:prettier": "prettier --write --cache .",
-    "lint-check:prettier": "prettier --check --cache ."
+    "lint-check:prettier": "prettier --check --cache .",
+    "release": "pnpm publish --no-git-checks --access public"
   },
   "dependencies": {
     "@hiogawa/utils": "^1.0.3",
