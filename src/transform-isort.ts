@@ -7,12 +7,14 @@ import { sortBy } from "lodash";
 interface IsortOptions {
   isortOrder: RegExp[];
   isortSpecifiers: boolean;
+  isortCaseInsensitive: boolean;
 }
 
 // TODO: configurable
 const options: IsortOptions = {
   isortOrder: [/^[./]/],
   isortSpecifiers: true,
+  isortCaseInsensitive: true,
 };
 
 export const transformIsort: Transform = (file, api, _options) => {
@@ -63,10 +65,12 @@ export const transformIsort: Transform = (file, api, _options) => {
       tinyassert(j.StringLiteral.check(decl.source));
       return [decl, decl.source.value];
     });
+
     return sortBy(
       declSources,
       ([_, source]) => options.isortOrder.findIndex((re) => source.match(re)),
-      ([_, source]) => source
+      ([_, source]) =>
+        options.isortCaseInsensitive ? source.toLowerCase() : source
     ).map(([decl]) => decl);
   }
 
