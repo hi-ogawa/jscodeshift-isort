@@ -1,9 +1,11 @@
 # jscodeshift-isort
 
-sorting `ImportDeclaration` and `ImportSpecifier` using a simple transform implemented on [`jscodeshift`](https://github.com/facebook/jscodeshift).
+Sort `ImportDeclaration` and `ImportSpecifier` using a simple transform implemented on [`jscodeshift`](https://github.com/facebook/jscodeshift).
+
+## example usage
 
 ```sh
-pnpm i -D jscodeshift @hiogawa/jscodeshift-isort
+npm install -D jscodeshift @hiogawa/jscodeshift-isort
 npx jscodeshift-isort $(git grep -l . '*.ts' '*.tsx') --fix
 ```
 
