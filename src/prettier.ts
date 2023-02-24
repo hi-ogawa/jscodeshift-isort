@@ -73,6 +73,8 @@ function transformIsortPrettier(program: Program) {
         continue;
       }
       group[1] = sortImportDeclarations(group[1] as ImportDeclaration[]);
+      // TODO: this breaks other things
+      // fixLineBreaks(group[1]);
     }
 
     return groups.map((group) => group[1]).flat();
@@ -120,5 +122,13 @@ function transformIsortPrettier(program: Program) {
       }
     }
     return lines;
+  }
+
+  // mutate
+  function fixLineBreaks(statements: ProgramStatement[]) {
+    for (const stmt of statements) {
+      // @ts-expect-error
+      delete stmt.range;
+    }
   }
 }

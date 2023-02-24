@@ -25,7 +25,6 @@ export function createComlinkEndpoint(port: browser.Runtime.Port): Endpoint {}
       import * as superjson from \\"superjson\\";
       import browser from \\"webextension-polyfill\\";
       import { logger } from \\"./logger\\";
-
       import { generateId, sleep } from \\"./misc\\";
       export function createComlinkEndpoint(port: browser.Runtime.Port): Endpoint {}
       "
@@ -49,6 +48,31 @@ import { y, x } from "b";
       import { y, x } from \\"a\\";
       import { x, y } from \\"b\\";
       import { x, y } from \\"c\\";
+      "
+    `);
+  });
+
+  // maybe printAstToDoc is culprit? https://github.com/prettier/prettier/blob/bc098779c4e457b1454895973196cffb3b1cdedf/src/main/core.js#L44
+  it("workaround newlines", () => {
+    // example from https://github.com/hi-ogawa/web-ext-tab-manager/pull/15
+    const input = `\
+import "d";
+import "c";
+
+import "b";
+import "a";
+
+0;
+1;
+`;
+    const output = runPrettierFormat(input);
+    expect(output).toMatchInlineSnapshot(`
+      "import \\"a\\";
+      import \\"b\\";
+      import \\"c\\";
+      import \\"d\\";
+      0;
+      1;
       "
     `);
   });
