@@ -1,5 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
-import { AST_NODE_TYPES } from "@typescript-eslint/types";
+import { AST_NODE_TYPES, AST_TOKEN_TYPES } from "@typescript-eslint/types";
 import type {
   ImportDeclaration,
   Program,
@@ -40,12 +40,15 @@ export function runPrettierFormat(
 //
 
 // mutate
-function transformIsortPrettier(ast: Program) {
+function transformIsortPrettier(program: Program) {
+  // collect ignored lines
+  const ignoreCommentLines = collectIgnoreCommentLines(program);
+
   // sort Program.body
-  ast.body = sortStatements(ast.body);
+  program.body = sortStatements(program.body);
 
   // sort ImportDeclaration.specifiers
-  for (const stmt of ast.body) {
+  for (const stmt of program.body) {
     if (stmt.type === AST_NODE_TYPES.ImportDeclaration) {
       sortImportSpecifiers(stmt);
     }
@@ -58,10 +61,11 @@ function transformIsortPrettier(ast: Program) {
   //
 
   function sortStatements(statements: ProgramStatement[]): ProgramStatement[] {
-    // TODO: how to get comment?
     const groups: [boolean, ProgramStatement[]][] = groupNeighborBy(
       statements,
-      (stmt) => stmt.type === AST_NODE_TYPES.ImportDeclaration
+      (stmt) =>
+        stmt.type === AST_NODE_TYPES.ImportDeclaration &&
+        !ignoreCommentLines.includes(stmt.loc.start.line - 1)
     );
 
     for (const group of groups) {
@@ -89,7 +93,7 @@ function transformIsortPrettier(ast: Program) {
 
   // mutate
   function sortImportSpecifiers(decl: ImportDeclaration) {
-    if (!decl.specifiers) {
+    if (ignoreCommentLines.includes(decl.loc.start.line - 1)) {
       return;
     }
     if (
@@ -103,5 +107,18 @@ function transformIsortPrettier(ast: Program) {
       tinyassert(node.type === AST_NODE_TYPES.ImportSpecifier);
       return node.imported.name;
     });
+  }
+
+  function collectIgnoreCommentLines(program: Program): number[] {
+    const lines: number[] = [];
+    for (const comment of program.comments ?? []) {
+      if (
+        comment.type === AST_TOKEN_TYPES.Line &&
+        comment.value.includes("prettier-ignore")
+      ) {
+        lines.push(comment.loc.start.line);
+      }
+    }
+    return lines;
   }
 }

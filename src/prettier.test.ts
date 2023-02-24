@@ -31,4 +31,25 @@ export function createComlinkEndpoint(port: browser.Runtime.Port): Endpoint {}
       "
     `);
   });
+
+  it("comment", () => {
+    const input = `\
+import { y, x } from "c";
+import { y, x } from "b";
+// prettier-ignore
+import { y, x } from "a";
+import { y, x } from "c";
+import { y, x } from "b";
+`;
+    const output = runPrettierFormat(input);
+    expect(output).toMatchInlineSnapshot(`
+      "import { x, y } from \\"b\\";
+      import { x, y } from \\"c\\";
+      // prettier-ignore
+      import { y, x } from \\"a\\";
+      import { x, y } from \\"b\\";
+      import { x, y } from \\"c\\";
+      "
+    `);
+  });
 });
