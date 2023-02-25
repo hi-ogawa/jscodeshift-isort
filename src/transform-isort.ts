@@ -11,7 +11,7 @@ interface IsortOptions {
 }
 
 // TODO: configurable
-const options: IsortOptions = {
+export const options: IsortOptions = {
   isortOrder: [/^[./]/],
   isortSpecifiers: true,
   isortCaseInsensitive: true,
@@ -93,7 +93,7 @@ export const transformIsort: Transform = (file, api, _options) => {
 // utils
 //
 
-function groupNeighborBy<T, K>(ls: T[], f: (x: T) => K): [K, T[]][] {
+export function groupNeighborBy<T, K>(ls: T[], f: (x: T) => K): [K, T[]][] {
   if (ls.length === 0) {
     return [];
   }
