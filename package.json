@@ -46,7 +46,8 @@
     "vitest": "^0.28.5"
   },
   "peerDependencies": {
-    "jscodeshift": "*"
+    "jscodeshift": "*",
+    "typescript": "*"
   },
   "volta": {
     "node": "18.14.0"
