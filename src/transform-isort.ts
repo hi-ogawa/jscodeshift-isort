@@ -44,7 +44,11 @@ export const transformIsort: Transform = (file, api, _options) => {
       statements,
       (stmt) =>
         stmt.type === "ImportDeclaration" &&
-        !stmt.comments?.some((c) => c.value.includes("isort-ignore"))
+        !stmt.comments?.some(
+          (c) =>
+            c.value.includes("isort-ignore") ||
+            c.value.includes("prettier-ignore")
+        )
     );
 
     for (const group of groups) {
