@@ -1,15 +1,12 @@
 import { tinyassert } from "@hiogawa/utils";
-import { sortBy, zip } from "lodash";
+import { range, sortBy } from "lodash";
 import ts from "typescript";
 import { DEFAULT_OPTIONS, groupNeighborBy } from "../transform-isort";
-
-// TODO: sortImportSpecifiers
 
 const IGNORE_COMMENTS = ["isort-ignore"];
 
 // minimum parse data to allow sorting afterward
 interface ImportDeclarationInfo {
-  fullStart: number;
   start: number;
   end: number;
   source: string;
@@ -17,11 +14,9 @@ interface ImportDeclarationInfo {
 }
 
 interface ImportSpecifierInfo {
-  fullStart: number;
   start: number;
   end: number;
   name: string;
-  imported?: string;
 }
 
 // cf. https://gist.github.com/hi-ogawa/cb338b4765d25321b120b2a47819abcc
@@ -56,7 +51,6 @@ function extraceImportDeclaration(
       tinyassert(ts.isImportDeclaration(node));
       tinyassert(ts.isStringLiteral(node.moduleSpecifier));
       const info: ImportDeclarationInfo = {
-        fullStart: node.getFullStart(),
         start: node.getStart(),
         end: node.end,
         source: node.moduleSpecifier.text,
@@ -75,11 +69,9 @@ function extraceImportSpecifier(
   const namedImports = node.importClause?.namedBindings;
   if (namedImports && ts.isNamedImports(namedImports)) {
     return namedImports.elements.map((node) => ({
-      fullStart: node.getFullStart(),
       start: node.getStart(),
       end: node.end,
       name: node.name.text,
-      imported: node.propertyName?.text,
     }));
   }
   return;
@@ -114,6 +106,11 @@ export function tsAnalyze(code: string) {
 export function tsTransformIsort(code: string): string {
   const groups = tsAnalyze(code);
   for (const group of groups) {
+    for (const decl of group) {
+      if (decl.specifiers) {
+        code = sortImportSpecifiers(code, decl.specifiers);
+      }
+    }
     code = sortImportDeclarations(code, group);
   }
   return code;
@@ -121,38 +118,55 @@ export function tsTransformIsort(code: string): string {
 
 function sortImportDeclarations(
   code: string,
-  decls: ImportDeclarationInfo[]
+  nodes: ImportDeclarationInfo[]
 ): string {
-  const start = decls[0]?.fullStart;
-  const end = decls.at(-1)?.end;
+  const sorted = sortBy(
+    nodes,
+    (node) =>
+      DEFAULT_OPTIONS.isortOrder.findIndex((re) => node.source.match(re)),
+    (node) =>
+      DEFAULT_OPTIONS.isortCaseInsensitive
+        ? node.source.toLowerCase()
+        : node.source
+  );
+  return replaceSortedNodes(code, nodes, sorted);
+}
+
+function sortImportSpecifiers(
+  code: string,
+  nodes: ImportSpecifierInfo[]
+): string {
+  const sorted = sortBy(nodes, (node) =>
+    DEFAULT_OPTIONS.isortCaseInsensitive ? node.name.toLowerCase() : node.name
+  );
+  return replaceSortedNodes(code, nodes, sorted);
+}
+
+// keep existing trivia fixed since this seems the easiest way to handle new lines naturally
+//   e.g.
+//     (trivia y)     (trivia y)
+//     (import y)  ⇒  (import x)
+//     (trivia x)     (trivia x)
+//     (import x)     (import y)
+function replaceSortedNodes(
+  code: string,
+  nodes: { start: number; end: number }[],
+  sorted: { start: number; end: number }[]
+): string {
+  const start = nodes[0]?.start;
+  const end = nodes.at(-1)?.end;
   tinyassert(typeof start === "number");
   tinyassert(typeof end === "number");
 
-  const sorted = sortBy(
-    decls,
-    (decl) =>
-      DEFAULT_OPTIONS.isortOrder.findIndex((re) => decl.source.match(re)),
-    (decl) =>
-      DEFAULT_OPTIONS.isortCaseInsensitive
-        ? decl.source.toLowerCase()
-        : decl.source
-  );
+  const ranges: [number, number][] = [];
+  for (const i of range(nodes.length)) {
+    ranges.push([sorted[i]!.start, sorted[i]!.end]);
+    if (i < nodes.length - 1) {
+      ranges.push([nodes[i]!.end, nodes[i + 1]!.start]);
+    }
+  }
 
-  // keep existing trivia fixed (this is probably the easiest way to handle new lines naturally)
-  // e.g.
-  //  (trivia y)     (trivia y)
-  //  (import y)  ⇒  (import x)
-  //  (trivia x)     (trivia x)
-  //  (import x)     (import y)
-
-  const triviaRanges = decls.map((decl) => [decl.fullStart, decl.start]);
-  const importRanges = sorted.map((decl) => [decl.start, decl.end]);
-  const allRanges = zip(triviaRanges, importRanges).flat(1) as [
-    number,
-    number
-  ][];
-
-  const result = [[0, start], ...allRanges, [end, code.length]]
+  const result = [[0, start], ...ranges, [end, code.length]]
     .map((range) => code.slice(...range))
     .join("");
   return result;

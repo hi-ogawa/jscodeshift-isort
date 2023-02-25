@@ -9,7 +9,7 @@ import "c";
 import { z, w } from "a";
 `;
     expect(tsTransformIsort(input)).toMatchInlineSnapshot(`
-      "import { z, w } from \\"a\\";
+      "import { w, z } from \\"a\\";
       import { x, y } from \\"b\\";
       import \\"c\\";
       "
@@ -19,19 +19,16 @@ import { z, w } from "a";
         [
           {
             "end": 25,
-            "fullStart": 0,
             "source": "b",
             "specifiers": [
               {
                 "end": 10,
-                "fullStart": 8,
                 "imported": undefined,
                 "name": "x",
                 "start": 9,
               },
               {
                 "end": 13,
-                "fullStart": 11,
                 "imported": undefined,
                 "name": "y",
                 "start": 12,
@@ -41,26 +38,22 @@ import { z, w } from "a";
           },
           {
             "end": 37,
-            "fullStart": 25,
             "source": "c",
             "specifiers": undefined,
             "start": 26,
           },
           {
             "end": 63,
-            "fullStart": 37,
             "source": "a",
             "specifiers": [
               {
                 "end": 48,
-                "fullStart": 46,
                 "imported": undefined,
                 "name": "z",
                 "start": 47,
               },
               {
                 "end": 51,
-                "fullStart": 49,
                 "imported": undefined,
                 "name": "w",
                 "start": 50,
@@ -83,7 +76,7 @@ import { z, w } from "a";
 `;
     expect(tsTransformIsort(input)).toMatchInlineSnapshot(`
       "// hey
-      import { z, w } from \\"a\\";
+      import { w, z } from \\"a\\";
       import { x, y } from \\"b\\"; // xxx
       // foo
       import \\"c\\";
@@ -94,19 +87,16 @@ import { z, w } from "a";
         [
           {
             "end": 32,
-            "fullStart": 0,
             "source": "b",
             "specifiers": [
               {
                 "end": 17,
-                "fullStart": 15,
                 "imported": undefined,
                 "name": "x",
                 "start": 16,
               },
               {
                 "end": 20,
-                "fullStart": 18,
                 "imported": undefined,
                 "name": "y",
                 "start": 19,
@@ -116,26 +106,22 @@ import { z, w } from "a";
           },
           {
             "end": 44,
-            "fullStart": 32,
             "source": "c",
             "specifiers": undefined,
             "start": 33,
           },
           {
             "end": 84,
-            "fullStart": 44,
             "source": "a",
             "specifiers": [
               {
                 "end": 69,
-                "fullStart": 67,
                 "imported": undefined,
                 "name": "z",
                 "start": 68,
               },
               {
                 "end": 72,
-                "fullStart": 70,
                 "imported": undefined,
                 "name": "w",
                 "start": 71,
@@ -159,7 +145,7 @@ import { z, w } from "a";
       "import { x, y } from \\"b\\";
       // isort-ignore
       import \\"c\\";
-      import { z, w } from \\"a\\";
+      import { w, z } from \\"a\\";
       "
     `);
     expect(tsAnalyze(input)).toMatchInlineSnapshot(`
@@ -167,19 +153,16 @@ import { z, w } from "a";
         [
           {
             "end": 25,
-            "fullStart": 0,
             "source": "b",
             "specifiers": [
               {
                 "end": 10,
-                "fullStart": 8,
                 "imported": undefined,
                 "name": "x",
                 "start": 9,
               },
               {
                 "end": 13,
-                "fullStart": 11,
                 "imported": undefined,
                 "name": "y",
                 "start": 12,
@@ -191,19 +174,16 @@ import { z, w } from "a";
         [
           {
             "end": 79,
-            "fullStart": 53,
             "source": "a",
             "specifiers": [
               {
                 "end": 64,
-                "fullStart": 62,
                 "imported": undefined,
                 "name": "z",
                 "start": 63,
               },
               {
                 "end": 67,
-                "fullStart": 65,
                 "imported": undefined,
                 "name": "w",
                 "start": 66,
@@ -226,7 +206,7 @@ import { z, w } from "a";
     expect(tsTransformIsort(input)).toMatchInlineSnapshot(`
       "import { x, y } from \\"b\\";
       \\"hello\\";
-      import { z, w } from \\"a\\";
+      import { w, z } from \\"a\\";
       import \\"c\\";
       "
     `);
@@ -235,19 +215,16 @@ import { z, w } from "a";
         [
           {
             "end": 25,
-            "fullStart": 0,
             "source": "b",
             "specifiers": [
               {
                 "end": 10,
-                "fullStart": 8,
                 "imported": undefined,
                 "name": "x",
                 "start": 9,
               },
               {
                 "end": 13,
-                "fullStart": 11,
                 "imported": undefined,
                 "name": "y",
                 "start": 12,
@@ -259,26 +236,22 @@ import { z, w } from "a";
         [
           {
             "end": 46,
-            "fullStart": 34,
             "source": "c",
             "specifiers": undefined,
             "start": 35,
           },
           {
             "end": 72,
-            "fullStart": 46,
             "source": "a",
             "specifiers": [
               {
                 "end": 57,
-                "fullStart": 55,
                 "imported": undefined,
                 "name": "z",
                 "start": 56,
               },
               {
                 "end": 60,
-                "fullStart": 58,
                 "imported": undefined,
                 "name": "w",
                 "start": 59,
@@ -310,14 +283,12 @@ import "a";
         [
           {
             "end": 11,
-            "fullStart": 0,
             "source": "b",
             "specifiers": undefined,
             "start": 0,
           },
           {
             "end": 23,
-            "fullStart": 11,
             "source": "a",
             "specifiers": undefined,
             "start": 12,
