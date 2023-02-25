@@ -23,13 +23,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 10,
-                "imported": undefined,
                 "name": "x",
                 "start": 9,
               },
               {
                 "end": 13,
-                "imported": undefined,
                 "name": "y",
                 "start": 12,
               },
@@ -48,18 +46,49 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 48,
-                "imported": undefined,
                 "name": "z",
                 "start": 47,
               },
               {
                 "end": 51,
-                "imported": undefined,
                 "name": "w",
                 "start": 50,
               },
             ],
             "start": 38,
+          },
+        ],
+      ]
+    `);
+  });
+
+  it("rename", () => {
+    const input = `\
+import { y as a, x as b } from "b";
+`;
+    expect(tsTransformIsort(input)).toMatchInlineSnapshot(`
+      "import { x as b, y as a } from \\"b\\";
+      "
+    `);
+    expect(tsAnalyze(input)).toMatchInlineSnapshot(`
+      [
+        [
+          {
+            "end": 35,
+            "source": "b",
+            "specifiers": [
+              {
+                "end": 15,
+                "name": "y",
+                "start": 9,
+              },
+              {
+                "end": 23,
+                "name": "x",
+                "start": 17,
+              },
+            ],
+            "start": 0,
           },
         ],
       ]
@@ -91,13 +120,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 17,
-                "imported": undefined,
                 "name": "x",
                 "start": 16,
               },
               {
                 "end": 20,
-                "imported": undefined,
                 "name": "y",
                 "start": 19,
               },
@@ -116,13 +143,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 69,
-                "imported": undefined,
                 "name": "z",
                 "start": 68,
               },
               {
                 "end": 72,
-                "imported": undefined,
                 "name": "w",
                 "start": 71,
               },
@@ -157,13 +182,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 10,
-                "imported": undefined,
                 "name": "x",
                 "start": 9,
               },
               {
                 "end": 13,
-                "imported": undefined,
                 "name": "y",
                 "start": 12,
               },
@@ -178,13 +201,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 64,
-                "imported": undefined,
                 "name": "z",
                 "start": 63,
               },
               {
                 "end": 67,
-                "imported": undefined,
                 "name": "w",
                 "start": 66,
               },
@@ -219,13 +240,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 10,
-                "imported": undefined,
                 "name": "x",
                 "start": 9,
               },
               {
                 "end": 13,
-                "imported": undefined,
                 "name": "y",
                 "start": 12,
               },
@@ -246,13 +265,11 @@ import { z, w } from "a";
             "specifiers": [
               {
                 "end": 57,
-                "imported": undefined,
                 "name": "z",
                 "start": 56,
               },
               {
                 "end": 60,
-                "imported": undefined,
                 "name": "w",
                 "start": 59,
               },

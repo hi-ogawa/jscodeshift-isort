@@ -71,7 +71,7 @@ function extraceImportSpecifier(
     return namedImports.elements.map((node) => ({
       start: node.getStart(),
       end: node.end,
-      name: node.name.text,
+      name: node.propertyName?.text ?? node.name.text,
     }));
   }
   return;
