@@ -17,6 +17,8 @@ const options: IsortOptions = {
   isortCaseInsensitive: true,
 };
 
+export { options as DEFAULT_OPTIONS };
+
 export const transformIsort: Transform = (file, api, _options) => {
   const j = api.jscodeshift;
   const $j = j(file.source);
@@ -97,7 +99,7 @@ export const transformIsort: Transform = (file, api, _options) => {
 // utils
 //
 
-function groupNeighborBy<T, K>(ls: T[], f: (x: T) => K): [K, T[]][] {
+export function groupNeighborBy<T, K>(ls: T[], f: (x: T) => K): [K, T[]][] {
   if (ls.length === 0) {
     return [];
   }
