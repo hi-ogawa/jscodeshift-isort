@@ -15,4 +15,5 @@ jobs:
       - run: pnpm i
       - run: pnpm tsc
       - run: pnpm build
+      - run: pnpm test
       - run: pnpm lint-check
