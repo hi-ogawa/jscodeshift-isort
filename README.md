@@ -6,7 +6,7 @@ Sort `ImportDeclaration` and `ImportSpecifier` using a simple transform implemen
 
 ```sh
 npm install -D jscodeshift @hiogawa/jscodeshift-isort
-npx jscodeshift-isort $(git grep -l . '*.ts' '*.tsx') --fix
+npx jscodeshift-isort $(git grep -l . '*.ts' '*.tsx') $(git ls-files --others --exclude-standard '*.ts') --fix
 ```
 
 ## development
@@ -14,7 +14,7 @@ npx jscodeshift-isort $(git grep -l . '*.ts' '*.tsx') --fix
 ```sh
 pnpm i
 pnpm dev
-./bin/cli.js $(git grep -l . '*.ts') --fix
+./bin/cli.js src/*.ts --fix
 
 # release
 pnpm build
